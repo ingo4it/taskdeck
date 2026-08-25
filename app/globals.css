@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: light-dark(#ffffff, #0b0e14);
+  --color-fg: light-dark(#0b0e14, #e6e9ef);
+  --color-muted: light-dark(#5b6472, #8b93a1);
+  --color-border: light-dark(#e5e7eb, #1f2430);
+  --color-accent: light-dark(#2563eb, #60a5fa);
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+/* respect reduced motion for the pipeline progress animation */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
