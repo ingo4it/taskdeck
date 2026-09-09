@@ -1,0 +1,81 @@
+name: taskdeck
+
+# Full local stack. taskdeck depends on the other three portfolio services;
+# this pulls their images (built from those repos) plus a shared Postgres.
+# The individual repos each have their own compose for developing them in
+# isolation — this one is for running taskdeck end to end.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: portfolio
+      POSTGRES_PASSWORD: portfolio
+      POSTGRES_DB: portfolio
+    ports: ["5432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+
+  keystone:
+    image: ghcr.io/ingo4it/keystone:latest
+    environment:
+      DATABASE_URL: postgres://portfolio:portfolio@postgres:5432/portfolio?schema=keystone
+      REDIS_URL: redis://redis:6379
+      TOKEN_ISSUER: http://localhost:8080
+      TOKEN_AUDIENCE: keystone
+      JWT_SIGNING_KEY_FILE: /config/dev-signing-key.json
+    ports: ["8080:8080"]
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  pulseq-admin:
+    image: ghcr.io/ingo4it/pulseq:latest
+    command: ["node", "dist/entrypoints/admin.js"]
+    environment:
+      DATABASE_URL: postgres://portfolio:portfolio@postgres:5432/portfolio?schema=pulseq
+      REDIS_URL: redis://redis:6379
+    ports: ["7411:7411"]
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  pulseq-worker:
+    image: ghcr.io/ingo4it/pulseq:latest
+    environment:
+      DATABASE_URL: postgres://portfolio:portfolio@postgres:5432/portfolio?schema=pulseq
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  modelgate:
+    image: ghcr.io/ingo4it/modelgate:latest
+    environment:
+      DATABASE_URL: postgres://portfolio:portfolio@postgres:5432/portfolio?schema=modelgate
+      REDIS_URL: redis://redis:6379
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      VOYAGE_API_KEY: ${VOYAGE_API_KEY:-}
+    ports: ["8000:8000"]
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  taskdeck:
+    build: .
+    environment:
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_PRESENCE_WS_URL: ws://localhost:8080/ws/presence
+      KEYSTONE_URL: http://keystone:8080
+      PULSEQ_ADMIN_URL: http://pulseq-admin:7411
+      MODELGATE_URL: http://modelgate:8000
+      SESSION_SECRET: dev-only-session-secret-change-me-please
+    ports: ["3000:3000"]
+    depends_on: [keystone, pulseq-admin, modelgate]
+
+volumes:
+  pgdata:
