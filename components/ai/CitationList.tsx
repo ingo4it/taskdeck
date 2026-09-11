@@ -10,8 +10,12 @@ export function CitationList({ citations }: { citations: Citation[] }) {
   return (
     <ol className="mt-2 space-y-1.5 text-xs text-[var(--color-muted)]">
       {citations.map((c, i) => (
-        <li key={`${c.documentId}-${c.ordinal}-${i}`} className="border-l-2 border-[var(--color-border)] pl-2">
-          <span className="font-medium text-[var(--color-fg)]">[{i + 1}]</span> {c.title} · part {c.ordinal + 1}
+        <li
+          key={`${c.documentId}-${c.ordinal}-${i}`}
+          className="border-l-2 border-[var(--color-border)] pl-2"
+        >
+          <span className="font-medium text-[var(--color-fg)]">[{i + 1}]</span> {c.title} · part{" "}
+          {c.ordinal + 1}
           <blockquote className="mt-0.5 italic">“{c.quote}”</blockquote>
         </li>
       ))}

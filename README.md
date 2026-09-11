@@ -21,7 +21,8 @@ processing and AI review, watch jobs progress in real time, see results.
 ## What it demonstrates
 
 - **Full-stack delivery** — Next.js (App Router) front end, typed end-to-end
-  against the API, deployed and publicly reachable.
+  against the API, built to deploy on Vercel with the backend on `groundwork` /
+  AWS (see the architecture diagram below).
 - **Real-time UI** — job progress and streamed AI output over SSE / WebSocket,
   optimistic updates, reconnect handling.
 - **Auth done once** — OIDC login via `keystone`, session handling, protected
@@ -46,20 +47,20 @@ flowchart LR
     PQ -->|parse · extract · review| MG[modelgate]
     MG --> PROV[Claude API]
     PQ --> PG
-    B -. deployed .- CDN[Vercel / edge]
-    KS -. deployed .- INFRA[groundwork / AWS]
+    B -. deploy target .- CDN[Vercel / edge]
+    KS -. deploy target .- INFRA[groundwork / AWS]
 ```
 
 ## Tech stack
 
-| Layer | Choice |
-|-------|--------|
+| Layer     | Choice                                                  |
+| --------- | ------------------------------------------------------- |
 | Front end | Next.js 15, React, TypeScript, Tailwind, TanStack Query |
-| Realtime | SSE for streams, WebSocket for presence |
-| Auth | OIDC via `keystone` |
-| Backend | `keystone` (API), `pulseq` (jobs), `modelgate` (AI) |
-| Tests | Vitest + Testing Library, Playwright e2e |
-| Deploy | Front end on Vercel, services via `groundwork` |
+| Realtime  | SSE for streams, WebSocket for presence                 |
+| Auth      | OIDC via `keystone`                                     |
+| Backend   | `keystone` (API), `pulseq` (jobs), `modelgate` (AI)     |
+| Tests     | Vitest + Testing Library, Playwright e2e                |
+| Deploy    | Front end on Vercel, services via `groundwork`          |
 
 ## Getting started
 

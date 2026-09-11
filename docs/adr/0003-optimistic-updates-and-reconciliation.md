@@ -29,7 +29,7 @@ events into it via a reducer. The React Query entry for the pipeline has a short
 
 - Optimistic updates make the app feel immediate; the snapshot makes a failed
   mutation a non-event (the row just reverts) instead of a broken UI.
-- Job state changes are *pushed* — modelling them as a query you poll would
+- Job state changes are _pushed_ — modelling them as a query you poll would
   either lag or hammer the server. The stream already carries every transition;
   the reducer is the single place they're applied, so the derived "overall"
   status can't drift.

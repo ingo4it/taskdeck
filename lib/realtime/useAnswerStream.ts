@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { parseSSE } from "./sse.js";
-import type { AnswerStreamEvent, Citation } from "../api/types.js";
+import { parseSSE } from "./sse";
+import type { AnswerStreamEvent, Citation } from "../api/types";
 
 /**
  * Drives a streamed Q&A answer. `ask()` opens the SSE stream (via taskdeck's

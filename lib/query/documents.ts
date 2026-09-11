@@ -1,13 +1,8 @@
 "use client";
 
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import type { Document, Page } from "../api/types.js";
-import { ApiError } from "../api/errors.js";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { Document, Page } from "../api/types";
+import { ApiError } from "../api/errors";
 
 /**
  * Client hooks over taskdeck's own `/api/documents*` routes (which proxy
@@ -77,14 +72,17 @@ export function useUploadDocument() {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      qc.setQueryData(documentKeys.list(), (old: { pages: Page<Document>[]; pageParams: unknown[] } | undefined) => {
-        if (!old) return old;
-        const [first, ...rest] = old.pages;
-        return {
-          ...old,
-          pages: [{ ...first!, data: [optimistic, ...first!.data] }, ...rest],
-        };
-      });
+      qc.setQueryData(
+        documentKeys.list(),
+        (old: { pages: Page<Document>[]; pageParams: unknown[] } | undefined) => {
+          if (!old) return old;
+          const [first, ...rest] = old.pages;
+          return {
+            ...old,
+            pages: [{ ...first!, data: [optimistic, ...first!.data] }, ...rest],
+          };
+        },
+      );
       return { snapshot, optimisticId: optimistic.id };
     },
     onError: (_err, _input, ctx) => {
@@ -103,13 +101,16 @@ export function useDeleteDocument() {
     onMutate: async (id) => {
       await qc.cancelQueries({ queryKey: documentKeys.list() });
       const snapshot = qc.getQueryData(documentKeys.list());
-      qc.setQueryData(documentKeys.list(), (old: { pages: Page<Document>[]; pageParams: unknown[] } | undefined) => {
-        if (!old) return old;
-        return {
-          ...old,
-          pages: old.pages.map((p) => ({ ...p, data: p.data.filter((d) => d.id !== id) })),
-        };
-      });
+      qc.setQueryData(
+        documentKeys.list(),
+        (old: { pages: Page<Document>[]; pageParams: unknown[] } | undefined) => {
+          if (!old) return old;
+          return {
+            ...old,
+            pages: old.pages.map((p) => ({ ...p, data: p.data.filter((d) => d.id !== id) })),
+          };
+        },
+      );
       return { snapshot };
     },
     onError: (_err, _id, ctx) => {

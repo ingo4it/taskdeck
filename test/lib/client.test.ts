@@ -18,9 +18,9 @@ describe("ApiClient", () => {
   });
 
   it("maps problem+json to ApiError and does not retry a 403", async () => {
-    const fetchImpl = vi.fn().mockResolvedValue(
-      jsonResponse(403, { title: "Insufficient scope", status: 403, code: "forbidden" }),
-    );
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValue(jsonResponse(403, { title: "Insufficient scope", status: 403, code: "forbidden" }));
     const client = new ApiClient({ service: "keystone", baseUrl: "http://x", fetchImpl });
     await expect(client.request("/v1/documents")).rejects.toMatchObject({
       name: "ApiError",

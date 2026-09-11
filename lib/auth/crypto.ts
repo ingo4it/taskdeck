@@ -35,11 +35,17 @@ export async function unseal(token: string, secret: string): Promise<string | nu
 }
 
 function b64url(bytes: Uint8Array): string {
-  return btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  return btoa(String.fromCharCode(...bytes))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
 }
 
-function fromB64url(s: string): Uint8Array {
+// TS 5.7+ parameterizes TypedArrays by their backing buffer type; Web Crypto's
+// BufferSource wants one backed by a concrete ArrayBuffer specifically, which
+// Uint8Array.from always produces — the return type just needs to say so.
+function fromB64url(s: string): Uint8Array<ArrayBuffer> {
   const b64 = s.replace(/-/g, "+").replace(/_/g, "/");
   const bin = atob(b64 + "=".repeat((4 - (b64.length % 4)) % 4));
-  return Uint8Array.from(bin, (c) => c.charCodeAt(0));
+  return Uint8Array.from(bin, (c) => c.charCodeAt(0)) as Uint8Array<ArrayBuffer>;
 }

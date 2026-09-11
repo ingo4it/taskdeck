@@ -23,7 +23,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       headers: { cookie: req.headers.get("cookie") ?? "" },
     });
     if (!tokenRes.ok) throw new Error(`token exchange ${tokenRes.status}`);
-    const token = (await tokenRes.json()) as { access_token: string; expires_in: number; refresh_token?: string };
+    const token = (await tokenRes.json()) as {
+      access_token: string;
+      expires_in: number;
+      refresh_token?: string;
+    };
 
     const sessionRes = await fetch(`${env.KEYSTONE_URL}/auth/session`, {
       headers: { authorization: `Bearer ${token.access_token}` },

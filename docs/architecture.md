@@ -77,11 +77,11 @@ sequenceDiagram
 
 ## Realtime
 
-| Feature | Transport | Hook | Notes |
-| --- | --- | --- | --- |
-| Pipeline progress | SSE (`fetch` reader) | `useJobStream` | reducer folds stage events; reconnect w/ backoff; server-rendered seed |
-| AI answer | SSE | `useAnswerStream` | single request, no reconnect; abort → modelgate stops billing |
-| Presence | WebSocket | `usePresence` | signed 60s ticket; heartbeats; roster broadcast (ADR-0001) |
+| Feature           | Transport            | Hook              | Notes                                                                  |
+| ----------------- | -------------------- | ----------------- | ---------------------------------------------------------------------- |
+| Pipeline progress | SSE (`fetch` reader) | `useJobStream`    | reducer folds stage events; reconnect w/ backoff; server-rendered seed |
+| AI answer         | SSE                  | `useAnswerStream` | single request, no reconnect; abort → modelgate stops billing          |
+| Presence          | WebSocket            | `usePresence`     | signed 60s ticket; heartbeats; roster broadcast (ADR-0001)             |
 
 ## Data flow for one upload
 

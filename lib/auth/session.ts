@@ -2,9 +2,9 @@ import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { serverEnv } from "../env.js";
-import { seal, unseal } from "./crypto.js";
-import type { Org, User } from "../api/types.js";
+import { serverEnv } from "../env";
+import { seal, unseal } from "./crypto";
+import type { Org, User } from "../api/types";
 
 /**
  * taskdeck's own session. It wraps the tokens keystone issued in an encrypted,

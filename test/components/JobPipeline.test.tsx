@@ -17,7 +17,14 @@ const seed: DocumentPipeline = {
   documentId: "doc-1",
   overall: "running",
   stages: [
-    { stage: "parse", state: "succeeded", attempt: 1, startedAt: null, finishedAt: "2026-09-10T11:59:00Z", error: null },
+    {
+      stage: "parse",
+      state: "succeeded",
+      attempt: 1,
+      startedAt: null,
+      finishedAt: "2026-09-10T11:59:00Z",
+      error: null,
+    },
     { stage: "extract", state: "running", attempt: 2, startedAt: null, finishedAt: null, error: null },
     { stage: "review", state: "pending", attempt: 0, startedAt: null, finishedAt: null, error: null },
   ],

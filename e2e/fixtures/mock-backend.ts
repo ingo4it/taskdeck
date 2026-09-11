@@ -20,20 +20,19 @@ const DOC = {
 };
 
 function sse(...frames: Array<{ event: string; data: unknown; delayMs?: number }>): string {
-  return frames
-    .map((f) => `event: ${f.event}\ndata: ${JSON.stringify(f.data)}\n\n`)
-    .join("");
+  return frames.map((f) => `event: ${f.event}\ndata: ${JSON.stringify(f.data)}\n\n`).join("");
 }
 
 export async function mockBackend(page: Page): Promise<void> {
   // pretend we already have a session
-  await page.context().addCookies([
-    { name: "td_session", value: "e2e-fake", url: "http://localhost:3000" },
-  ]);
+  await page.context().addCookies([{ name: "td_session", value: "e2e-fake", url: "http://localhost:3000" }]);
 
   await page.route("**/api/documents", async (route: Route) => {
     if (route.request().method() === "POST") {
-      return route.fulfill({ status: 201, json: { ...DOC, id: "doc-e2e-2", status: "uploaded", title: "Uploaded" } });
+      return route.fulfill({
+        status: 201,
+        json: { ...DOC, id: "doc-e2e-2", status: "uploaded", title: "Uploaded" },
+      });
     }
     return route.fulfill({ json: { data: [DOC], page: { limit: 20, hasMore: false, nextCursor: null } } });
   });
@@ -66,7 +65,13 @@ export async function mockBackend(page: Page): Promise<void> {
             model: "claude-sonnet-5",
             fellBack: false,
             citations: [
-              { documentId: "doc-e2e-1", sourceUri: "file://vendor-msa.pdf", title: "Vendor MSA", ordinal: 6, quote: "Either party may terminate on 30 days written notice." },
+              {
+                documentId: "doc-e2e-1",
+                sourceUri: "file://vendor-msa.pdf",
+                title: "Vendor MSA",
+                ordinal: 6,
+                quote: "Either party may terminate on 30 days written notice.",
+              },
             ],
           },
         },

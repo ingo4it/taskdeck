@@ -1,4 +1,4 @@
-import { ApiError, type Problem } from "./errors.js";
+import { ApiError, type Problem } from "./errors";
 
 /**
  * Minimal typed fetch client for one upstream service. Server-side only — it
@@ -113,4 +113,5 @@ export class ApiClient {
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-const backoffMs = (attempt: number) => Math.round((2 ** attempt * 100) / 2 + Math.random() * (2 ** attempt * 100) / 2);
+const backoffMs = (attempt: number) =>
+  Math.round((2 ** attempt * 100) / 2 + (Math.random() * (2 ** attempt * 100)) / 2);

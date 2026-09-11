@@ -23,7 +23,11 @@ export function Badge({
   } as const;
   return (
     <span
-      className={cn("inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium", tones[tone], className)}
+      className={cn(
+        "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
+        tones[tone],
+        className,
+      )}
       {...props}
     />
   );
@@ -35,7 +39,11 @@ export function Skeleton({ className }: { className?: string }) {
 
 export function Spinner({ label = "Loading" }: { label?: string }) {
   return (
-    <span role="status" aria-label={label} className="inline-block size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+    <span
+      role="status"
+      aria-label={label}
+      className="inline-block size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+    />
   );
 }
 

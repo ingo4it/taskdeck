@@ -26,7 +26,7 @@ pulseq / modelgate directly.
   multiplexing, and our `fetch`-based reader (not `EventSource`) lets us POST a
   body and send cookies. A WebSocket for a one-way feed is a second protocol to
   operate for no benefit.
-- Presence *is* two-way and low-frequency, which is exactly WebSocket's sweet
+- Presence _is_ two-way and low-frequency, which is exactly WebSocket's sweet
   spot; doing it over SSE + a POST-per-heartbeat would be worse.
 - Proxying everything through this app's routes means one auth model (the
   session cookie), one place to attach the bearer token, and the browser never

@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider, isServer } from "@tanstack/react-query";
 import { useState } from "react";
-import { isApiError } from "../api/errors.js";
+import { isApiError } from "../api/errors";
 
 /**
  * One `QueryClient` per browser tab. `retry` defers to `ApiError.retryable` so

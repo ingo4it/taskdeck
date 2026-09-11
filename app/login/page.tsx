@@ -3,6 +3,10 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 import { Button } from "@/components/ui/button";
 
+// Checks the session cookie on every request to redirect already-signed-in
+// users straight to /dashboard — not something a static build can decide.
+export const dynamic = "force-dynamic";
+
 export default async function LoginPage({
   searchParams,
 }: {

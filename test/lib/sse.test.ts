@@ -20,7 +20,10 @@ async function collect(s: ReadableStream<Uint8Array>) {
 describe("parseSSE", () => {
   it("parses event/data/id frames split across chunks", async () => {
     const msgs = await collect(
-      streamOf("event: stage\nid: 7\nda", 'ta: {"type":"stage"}\n\nevent: pipeline\ndata: {"type":"pipeline"}\n\n'),
+      streamOf(
+        "event: stage\nid: 7\nda",
+        'ta: {"type":"stage"}\n\nevent: pipeline\ndata: {"type":"pipeline"}\n\n',
+      ),
     );
     expect(msgs).toEqual([
       { event: "stage", id: "7", data: '{"type":"stage"}' },

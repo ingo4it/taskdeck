@@ -29,7 +29,11 @@ export function DocumentsView({ initial }: { initial: Page<Document> }) {
         <EmptyState
           title="Couldn't load documents"
           hint={isApiError(q.error) ? q.error.message : "Something went wrong."}
-          action={<Button variant="ghost" onClick={() => void q.refetch()}>Retry</Button>}
+          action={
+            <Button variant="ghost" onClick={() => void q.refetch()}>
+              Retry
+            </Button>
+          }
         />
       ) : docs.length === 0 && !q.isLoading ? (
         <EmptyState title="No documents yet" hint="Upload a PDF or Word doc to start a review." />

@@ -6,7 +6,9 @@
   "author": "Frank Rao <frank@frankrao.com>",
   "license": "MIT",
   "packageManager": "pnpm@9.12.3",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

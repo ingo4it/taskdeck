@@ -1,13 +1,6 @@
-import { serverEnv } from "../env.js";
-import { ApiClient } from "./client.js";
-import type {
-  Answer,
-  Document,
-  DocumentPipeline,
-  Page,
-  ReviewResult,
-  Session,
-} from "./types.js";
+import { serverEnv } from "../env";
+import { ApiClient } from "./client";
+import type { Answer, Document, DocumentPipeline, Page, ReviewResult, Session } from "./types";
 
 /**
  * The server-side gateway to the three backend services. Given the caller's

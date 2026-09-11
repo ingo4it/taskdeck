@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useReducer, useRef, useState } from "react";
-import { subscribe } from "./sse.js";
-import type { DocumentPipeline, JobStage, JobStageState, JobStreamEvent } from "../api/types.js";
+import { subscribe } from "./sse";
+import type { DocumentPipeline, JobStage, JobStageState, JobStreamEvent } from "../api/types";
 
 /**
  * Subscribes to a document's pipeline SSE stream and folds stage-transition
@@ -22,9 +22,7 @@ function reducer(state: DocumentPipeline, action: Action): DocumentPipeline {
       return {
         ...state,
         stages: state.stages.map((s) =>
-          s.stage === action.stage
-            ? { ...s, state: action.state, attempt: action.attempt }
-            : s,
+          s.stage === action.stage ? { ...s, state: action.state, attempt: action.attempt } : s,
         ),
         overall: deriveOverall(
           state.stages.map((s) => (s.stage === action.stage ? { ...s, state: action.state } : s)),

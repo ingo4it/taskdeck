@@ -13,6 +13,15 @@ ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH NEXT_TELEMETRY_DISABLED=1
 RUN corepack enable
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# NEXT_PUBLIC_* values are inlined into the client bundle at build time, so
+# they must be real by the time `next build` runs — override with
+# --build-arg for a real deployment. Server-only vars (KEYSTONE_URL,
+# SESSION_SECRET, ...) are read lazily at request time and are not needed
+# here; they're supplied to the runtime container instead.
+ARG NEXT_PUBLIC_APP_URL=http://localhost:3000
+ARG NEXT_PUBLIC_PRESENCE_WS_URL=ws://localhost:3000/ws/presence
+ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL \
+    NEXT_PUBLIC_PRESENCE_WS_URL=$NEXT_PUBLIC_PRESENCE_WS_URL
 # `output: "standalone"` would slim this further; kept simple here.
 RUN pnpm build
 

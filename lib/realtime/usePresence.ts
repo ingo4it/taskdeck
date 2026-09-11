@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { publicEnv } from "../env.js";
+import { publicEnv } from "../env";
 
 /**
  * WebSocket presence: who else is looking at this document right now.

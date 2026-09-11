@@ -5,7 +5,11 @@ import { authed } from "@/lib/api/route";
 const createSchema = z.object({
   title: z.string().min(1).max(200),
   filename: z.string().min(1),
-  byteSize: z.number().int().positive().max(50 * 1024 * 1024),
+  byteSize: z
+    .number()
+    .int()
+    .positive()
+    .max(50 * 1024 * 1024),
 });
 
 export const GET = authed(async ({ be }, req: NextRequest) => {

@@ -41,7 +41,7 @@ export function JobPipeline({ initial }: { initial: DocumentPipeline }) {
             )}
           >
             <div className="flex items-center gap-3">
-              <span className="text-xs tabular-nums text-[var(--color-muted)]">{i + 1}</span>
+              <span className="text-xs text-[var(--color-muted)] tabular-nums">{i + 1}</span>
               <span className="text-sm">{STAGE_LABEL[stage.stage]}</span>
             </div>
             <div className="flex items-center gap-3">
