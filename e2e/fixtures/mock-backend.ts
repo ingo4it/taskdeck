@@ -1,4 +1,7 @@
 import type { Page, Route } from "@playwright/test";
+import { seal } from "../../lib/auth/crypto";
+import type { SessionData } from "../../lib/auth/session";
+import { E2E_SESSION_SECRET } from "./e2e-secrets";
 
 /**
  * Intercepts every call the browser makes to taskdeck's own `/api/*` surface
@@ -23,12 +26,38 @@ function sse(...frames: Array<{ event: string; data: unknown; delayMs?: number }
   return frames.map((f) => `event: ${f.event}\ndata: ${JSON.stringify(f.data)}\n\n`).join("");
 }
 
+async function sealedSessionCookie(): Promise<string> {
+  // Must actually decrypt via lib/auth/session.ts's getSession() — a plain
+  // placeholder string fails unseal() and silently redirects every page to
+  // /login, which is what a raw fake cookie value used to do here.
+  const session: SessionData = {
+    accessToken: "e2e-access-token",
+    refreshToken: "e2e-refresh-token",
+    expiresAt: Math.floor(Date.now() / 1000) + 3600,
+    user: {
+      id: "u-e2e",
+      email: "demo@taskdeck.dev",
+      displayName: "Demo User",
+      status: "ACTIVE",
+      roles: ["member"],
+    },
+    org: { id: "org-1", slug: "acme", name: "Acme Inc", role: "owner" },
+  };
+  return seal(JSON.stringify(session), E2E_SESSION_SECRET);
+}
+
 export async function mockBackend(page: Page): Promise<void> {
   // pretend we already have a session
-  await page.context().addCookies([{ name: "td_session", value: "e2e-fake", url: "http://localhost:3000" }]);
+  await page
+    .context()
+    .addCookies([{ name: "td_session", value: await sealedSessionCookie(), url: "http://localhost:3000" }]);
 
   await page.route("**/api/documents", async (route: Route) => {
     if (route.request().method() === "POST") {
+      // A real create round trip takes long enough for the optimistic row
+      // to actually render; fulfilling instantly can beat React's paint
+      // and make the "uploading…" assertion race the response.
+      await new Promise((r) => setTimeout(r, 800));
       return route.fulfill({
         status: 201,
         json: { ...DOC, id: "doc-e2e-2", status: "uploaded", title: "Uploaded" },
