@@ -19,6 +19,10 @@ export function usePresence(documentId: string) {
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
+    // No presence gateway to connect to in DEMO_MODE — fail quietly instead
+    // of retrying a WebSocket that will never exist.
+    if (publicEnv.NEXT_PUBLIC_DEMO_MODE) return;
+
     let closed = false;
     let heartbeat: ReturnType<typeof setInterval> | undefined;
     let reconnectTimer: ReturnType<typeof setTimeout> | undefined;

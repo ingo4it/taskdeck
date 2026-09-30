@@ -4,10 +4,13 @@
 > running background jobs and AI-assisted document review, built on `keystone`
 > for the API, `pulseq` for async work, and `modelgate` for the AI features.
 
-[![CI](https://img.shields.io/badge/CI-pending-lightgrey?style=flat-square)](#)
+[![CI](https://github.com/ingo4it/taskdeck/actions/workflows/ci.yml/badge.svg)](https://github.com/ingo4it/taskdeck/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 
-**Live demo:** _pending_
+**Live demo:** _pending_ — runs standalone in demo mode (see
+[Demo mode](#demo-mode) below): keystone/pulseq/modelgate are simulated with
+realistic fixture data rather than live services, so there's a working app to
+click through without standing up three separate backends.
 
 ---
 
@@ -76,6 +79,33 @@ open http://localhost:3000
 
 A seed script creates a demo org, user, and sample documents so the app is
 non-empty on first run.
+
+## Demo mode
+
+The live deployment doesn't have keystone, pulseq, or modelgate running behind
+it — standing up three stateful services just to host a portfolio demo isn't
+worth the cost or the operational surface. Instead, `DEMO_MODE=true` swaps
+`lib/api/index.ts`'s `backend()` gateway for `lib/demo/backend.ts`: same
+`Backend` interface, so every route handler and server component above it is
+unaware which one it's talking to, but the responses come from realistic
+in-process fixtures (`lib/demo/data.ts`) instead of a network call.
+
+That covers auth (a direct session mint instead of the real OIDC + PKCE round
+trip — see `/api/auth/demo-login`), the document list/detail, the pipeline and
+Q&A SSE streams (replayed with realistic pacing, not returned instantly), and
+uploads (echoed back, not persisted — this runs on stateless serverless
+functions). Live presence over WebSocket has nothing to connect to in this
+mode and is disabled rather than left retrying forever.
+
+Run it locally with:
+
+```bash
+DEMO_MODE=true NEXT_PUBLIC_DEMO_MODE=true NEXT_PUBLIC_APP_URL=http://localhost:3000 \
+  SESSION_SECRET=$(openssl rand -base64 32) pnpm build && pnpm start
+```
+
+To deploy for real against live keystone/pulseq/modelgate, leave `DEMO_MODE`
+unset — `lib/env.ts` requires the three service URLs in that case.
 
 ## Project layout
 
